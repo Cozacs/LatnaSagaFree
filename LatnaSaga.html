@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latna Saga</title>
+    <style>
+        .aligncenter {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #controls {
+            position: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 150px;
+            bottom: 80px;
+            right: 20px;
+            background-color: #f8f9fa;
+            gap: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #controls input {
+            margin: 5px 0;
+            padding: 5px;
+            width: 40px;
+        }
+        #controls button {
+            margin-bottom: 5px;
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #controls button:hover {
+            background-color: #218838;
+        }
+        #scrollToTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #scrollToTop:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="imageContainer"></div>
+    <div id="controls">
+        <input type="number" id="startValue" placeholder="Start" min="1" value="1">
+        <input type="number" id="endValue" placeholder="End" min="1" value="110">
+        <input type="number" id="chapter" placeholder="Chapter" min="1" value="160">
+        <button id="updateImages">Atualizar</button>
+    </div>
+    <button id="scrollToTop">Voltar ao Topo</button>
+    <script>
+        function loadSavedValues() {
+            const startValue = localStorage.getItem('startValue') || 1;
+            const endValue = localStorage.getItem('endValue') || 110;
+            const chapter = localStorage.getItem('chapter') || 1;
+
+            document.getElementById('startValue').value = startValue;
+            document.getElementById('endValue').value = endValue;
+            document.getElementById('chapter').value = chapter;
+        }
+        function saveValues() {
+            const startValue = document.getElementById('startValue').value;
+            const endValue = document.getElementById('endValue').value;
+            const chapter = document.getElementById('chapter').value;
+
+            localStorage.setItem('startValue', startValue);
+            localStorage.setItem('endValue', endValue);
+            localStorage.setItem('chapter', chapter);
+        }
+        function renderImageList(start, end, chapter) {
+            const container = document.getElementById('imageContainer');
+            container.innerHTML = '';
+            
+            for (let i = start; i <= end; i++) {
+                const imgElement = document.createElement('img');
+                imgElement.classList.add('aligncenter');
+                imgElement.src = `https://official.lowee.us/manga/Survival-Story-of-a-Sword-King-in-a-Fantasy-World/${String(chapter).padStart(4, '0')}-${String(i).padStart(3, '0')}.png`;
+                container.appendChild(imgElement);
+            }
+        }
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        function updateImages() {
+            const startValue = parseInt(document.getElementById('startValue').value, 10);
+            const endValue = parseInt(document.getElementById('endValue').value, 10);
+            const chapter = parseInt(document.getElementById('chapter').value, 10);
+
+            if (startValue > 0 && endValue >= startValue) {
+                saveValues();
+                renderImageList(startValue, endValue, chapter);
+            } else {
+                alert('Por favor, insira valores válidos. "End" deve ser maior ou igual a "Start".');
+            }
+        }
+
+        document.getElementById('scrollToTop').addEventListener('click', scrollToTop);
+        document.getElementById('updateImages').addEventListener('click', updateImages);
+        loadSavedValues();
+        updateImages();
+    </script>
+</body>
+</html>
